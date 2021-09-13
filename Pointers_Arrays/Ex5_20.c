@@ -23,7 +23,7 @@ int getch(void) ;
 int gettoken() ;
 int typequal() ;
 int typespec() ;
-int comp( char **string1 , char **string2 ) ;
+int comp( const void *string1 ,  const void *string2 ) ;
 int BUFFP = -1 ;
 int tokentype ;
 int main( int argc , char *argv[] )
@@ -32,7 +32,7 @@ int main( int argc , char *argv[] )
         strcpy( datatype , token ) ;
         out[0] = '\0' ;
         dcl() ;
-        printf("\n%s : %s %s" , name , datatype , out )  ;
+        printf("\n%s : %s %s" , name , out , datatype )  ;
     }
     return 0 ;
 }
@@ -56,13 +56,15 @@ int gettoken()
         //*p = c ;
         if( (c = getch()) == ')' ){
             //*p = '\0' ;
+            strcpy( token , "()" ) ;
             return tokentype = PARENS ;
         } else{
             ungetch( c );
-            *p = '\0' ;
-            return tokentype = c ; 
+            //*p = '\0' ;
+            return tokentype = '(' ; 
         }
     } else if( c == '[' ){
+        *p = c ;
         while( ((*++p) = getch()) != ']' ) ;
         *++p = '\0' ;
         return tokentype = BRACKETS ;
@@ -107,15 +109,16 @@ void dirdcl()
         errordisp("\ndirdcl() reads only '(dcl)' or 'name'") ;
 
 
-    while( tokentype == PARENS || tokentype == BRACKETS ){
+    while( gettoken() == PARENS || tokentype == BRACKETS || tokentype == '(' ){
         if( tokentype == PARENS )
-            strcat(out , " function expecting ") ;
-        else if( tokentype == '(')
+            strcat(out , " function returning ") ;
+        else if( tokentype == '('){
+            strcat( out , " function expecting ") ;
             parmdcl() ;
-        else{
+        } else{
             strcat( out , " arrary") ;
             strcat( out , token );
-            strcat( out , " of ") ;
+            strcat( out , " of") ;
         }
     }
 }
@@ -157,10 +160,13 @@ void dclspec()
 
 int typequal()
 {
-    char *qual[]= { "const" ,
-                    "volatile" } ;
-
-    if( bsearch( token , qual , sizeof(qual)/sizeof(char) , sizeof(char *) , comp) )
+    static char *qual[] = { "const" ,
+                            "volatile" } ;
+    //qual[0] = (char *)malloc(4) ; qual[1] = (char *)malloc(8) ;
+    //*( qual ) = 'c'; ( *qual + 1 ) = 'h' ; ( *qual + 2 ) = 'a' ; ( *qual + 3 ) = 'r' ;
+    //*( qual + 1) = 'v' ; ( *( qual + 1) + 1 ) = 'o' ; ( *( qual + 1) + 2 ) = 'l' ; ( *( qual + 1) + 3 ) = 'a' ; ( *( qual + 1) + 4 ) = 't' ; ( *( qual + 1) + 5 ) = 'i' ; ( *( qual + 1) + 6 ) = 'l' ; ( *( qual + 1) + 7 ) = 'e' ; 
+    char *pt = token ;
+    if( bsearch( &pt , qual , sizeof(qual)/sizeof(char) , sizeof(char *) , comp) )
         return 1 ;
     else    
         return 0 ;
@@ -168,17 +174,22 @@ int typequal()
 
 int typespec()
 {
-    char *type[]= { "char" ,
-                    "float" ,
-                    "int" } ;
-    
-    if( bsearch( token , type , sizeof(type)/sizeof(char) , sizeof(char*) , comp) )
+    static char *type[3] = { "char",
+                             "float",
+                             "int" } ;
+    //type[0] = (char *)malloc(4) ; type[1] = (char *)malloc(5) ; type[2] = (char *)malloc(3) ;
+    //*type[0] = 'c' ; ( *type[0] + 1 ) = 'h' ; 
+    char *pt = token ;
+    if( bsearch( &pt , (void *)type , sizeof(type)/sizeof(char) , sizeof(char*) , comp) )
         return 1 ;
     else
         return 0 ;
 }
 
-int comp( char **string1 , char **string2 )
+int comp( const void *string1 ,  const void *string2 )
 {
-    return strcmp( *string1 , *string2 ) ;
+    //const char *key = string1 ;
+    //const char *const *arg = string2 ;
+    printf("\n comp string1 : %s , string2 :%s ", string1 , string2 ) ;
+    return strcmp( *(char **)string1 , *(char **)string2 ) ;
 }
