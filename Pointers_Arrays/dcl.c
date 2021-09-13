@@ -39,8 +39,7 @@ int gettoken(void)
     void ungetch(int);
     char *p = token;
 
-    while((c=getch()) == ' ' || c == '\t')
-        ;
+    while((c=getch()) == ' ' || c == '\t') ;
     
     if( c == '(')
     {
