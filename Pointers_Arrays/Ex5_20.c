@@ -32,6 +32,8 @@ int main( int argc , char *argv[] )
         strcpy( datatype , token ) ;
         out[0] = '\0' ;
         dcl() ;
+        if (tokentype != '\n')
+            printf("syntax error\n");
         printf("\n%s : %s %s" , name , out , datatype )  ;
     }
     return 0 ;
@@ -128,7 +130,8 @@ void parmdcl()
     do{
         dclspec() ;
         strcat( out , "," ) ;
-    }while( tokentype != ')' && tokentype != EOF ) ;
+    }while( tokentype == ',' ) ;
+
     if( tokentype != ')' )
         errordisp("\nMissing ) at the end of parameter list ") ;
 }
@@ -152,7 +155,7 @@ void dclspec()
         } else{
             PREVTOKEN = 1 ;
             dcl() ;
-            gettoken() ;
+            //gettoken() ;
         }
     } while( tokentype != ')' && tokentype != EOF && tokentype != ',') ;
     strcat( out , temp ) ;
@@ -166,30 +169,33 @@ int typequal()
     //*( qual ) = 'c'; ( *qual + 1 ) = 'h' ; ( *qual + 2 ) = 'a' ; ( *qual + 3 ) = 'r' ;
     //*( qual + 1) = 'v' ; ( *( qual + 1) + 1 ) = 'o' ; ( *( qual + 1) + 2 ) = 'l' ; ( *( qual + 1) + 3 ) = 'a' ; ( *( qual + 1) + 4 ) = 't' ; ( *( qual + 1) + 5 ) = 'i' ; ( *( qual + 1) + 6 ) = 'l' ; ( *( qual + 1) + 7 ) = 'e' ; 
     char *pt = token ;
-    if( bsearch( &pt , qual , sizeof(qual)/sizeof(char) , sizeof(char *) , comp) )
-        return 1 ;
-    else    
+    if( bsearch( &pt , qual , sizeof(qual)/sizeof(char *) , sizeof(char *) , comp) == NULL)
         return 0 ;
+    return 1 ;
 }
 
 int typespec()
 {
-    static char *type[3] = { "char",
+    static char *type[] = { "char",
                              "float",
                              "int" } ;
     //type[0] = (char *)malloc(4) ; type[1] = (char *)malloc(5) ; type[2] = (char *)malloc(3) ;
     //*type[0] = 'c' ; ( *type[0] + 1 ) = 'h' ; 
     char *pt = token ;
-    if( bsearch( &pt , (void *)type , sizeof(type)/sizeof(char) , sizeof(char*) , comp) )
-        return 1 ;
-    else
+    if( bsearch( &pt , type , sizeof(type)/sizeof(char *) , sizeof(char*) , comp) == NULL)
         return 0 ;
+    else
+        return 1 ;
 }
 
 int comp( const void *string1 ,  const void *string2 )
 {
     //const char *key = string1 ;
     //const char *const *arg = string2 ;
-    printf("\n comp string1 : %s , string2 :%s ", string1 , string2 ) ;
-    return strcmp( *(char **)string1 , *(char **)string2 ) ;
+    char **chs;
+    char **cht;
+    chs = (char **) string1;
+    cht = (char **) string2;
+    //printf("\n comp string1 : %s , string2 :%s ", string1 , string2 ) ;
+    return strcmp( *chs , *cht ) ;
 }
