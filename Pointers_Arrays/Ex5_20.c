@@ -32,11 +32,8 @@ int main( int argc , char *argv[] )
         strcpy( datatype , token ) ;
         out[0] = '\0' ;
         dcl() ;
-<<<<<<< HEAD
         if (tokentype != '\n')
             printf("syntax error\n");
-=======
->>>>>>> 01c967eefd7f77b565579e8bc11595ddb1d49aae
         printf("\n%s : %s %s" , name , out , datatype )  ;
     }
     return 0 ;
@@ -172,36 +169,20 @@ int typequal()
     //*( qual ) = 'c'; ( *qual + 1 ) = 'h' ; ( *qual + 2 ) = 'a' ; ( *qual + 3 ) = 'r' ;
     //*( qual + 1) = 'v' ; ( *( qual + 1) + 1 ) = 'o' ; ( *( qual + 1) + 2 ) = 'l' ; ( *( qual + 1) + 3 ) = 'a' ; ( *( qual + 1) + 4 ) = 't' ; ( *( qual + 1) + 5 ) = 'i' ; ( *( qual + 1) + 6 ) = 'l' ; ( *( qual + 1) + 7 ) = 'e' ; 
     char *pt = token ;
-<<<<<<< HEAD
     if( bsearch( &pt , qual , sizeof(qual)/sizeof(char *) , sizeof(char *) , comp) == NULL)
-=======
-    if( bsearch( &pt , qual , sizeof(qual)/sizeof(char) , sizeof(char *) , comp) )
-        return 1 ;
-    else    
->>>>>>> 01c967eefd7f77b565579e8bc11595ddb1d49aae
         return 0 ;
     return 1 ;
 }
 
 int typespec()
 {
-<<<<<<< HEAD
     static char *type[] = { "char",
-=======
-    static char *type[3] = { "char",
->>>>>>> 01c967eefd7f77b565579e8bc11595ddb1d49aae
                              "float",
                              "int" } ;
     //type[0] = (char *)malloc(4) ; type[1] = (char *)malloc(5) ; type[2] = (char *)malloc(3) ;
     //*type[0] = 'c' ; ( *type[0] + 1 ) = 'h' ; 
     char *pt = token ;
-<<<<<<< HEAD
     if( bsearch( &pt , type , sizeof(type)/sizeof(char *) , sizeof(char*) , comp) == NULL)
-=======
-    if( bsearch( &pt , (void *)type , sizeof(type)/sizeof(char) , sizeof(char*) , comp) )
-        return 1 ;
-    else
->>>>>>> 01c967eefd7f77b565579e8bc11595ddb1d49aae
         return 0 ;
     else
         return 1 ;
@@ -211,15 +192,10 @@ int comp( const void *string1 ,  const void *string2 )
 {
     //const char *key = string1 ;
     //const char *const *arg = string2 ;
-<<<<<<< HEAD
     char **chs;
     char **cht;
     chs = (char **) string1;
     cht = (char **) string2;
     //printf("\n comp string1 : %s , string2 :%s ", string1 , string2 ) ;
     return strcmp( *chs , *cht ) ;
-=======
-    printf("\n comp string1 : %s , string2 :%s ", string1 , string2 ) ;
-    return strcmp( *(char **)string1 , *(char **)string2 ) ;
->>>>>>> 01c967eefd7f77b565579e8bc11595ddb1d49aae
 }
