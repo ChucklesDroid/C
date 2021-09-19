@@ -52,7 +52,7 @@ int main()
 		strcpy(out, token);
 		while ((type = gettoken()) != '\n') {
 			if (type == PARENS) {
-				if (out[0] == '*') {
+				if (out[0] == '*' || strstr(out , "[]") != NULL) {
 					sprintf(temp, "(%s)", out);
 					strcpy(out, temp);
 				}
