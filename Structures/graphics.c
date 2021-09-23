@@ -35,8 +35,9 @@ struct point addpoint( struct point p1 , struct point p2 )
 // ptinrect : Checks if the given point falls inside the rectangle or not and returns true or false
 int ptinrect( struct point p , struct rectangle r)
 {
-	return(( ( p.x >= r.pt1.x ) && ( p.x <= r.pt2.x ) )&&( ( p.y >= r.pt1.y ) && (p.y <= r.pt2.y) ) ) ; //Assumed rectangle in canonical form and pt1 coordinates are less than pt2
+	return(( ( p.x >= r.pt1.x ) && ( p.x <= r.pt2.x ) )&&( ( p.y >= r.pt1.y ) && (p.y <= r.pt2.y) ) ) ; //Assumed rectangle in canonical form and pt1 coordinates are less than pt2 (here canonical form means pt1 is closer to origin than pt2) 
 }
+
 int main( int argc , char *argv[] )
 {
 	struct point pt ;
