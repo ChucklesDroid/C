@@ -2,6 +2,8 @@
  	This Program basically tracks all the functions introduced in the book to explain passing Structures.
  */
 #include <stdio.h>
+#define max(a,b) ((a) > (b) ? (a) : (b))
+#define min(a,b) ((a) > (b) ? (b) : (a)) 
 
 // point :stores coordinates of a point i.e x and y.
 struct point{
@@ -38,8 +40,20 @@ int ptinrect( struct point p , struct rectangle r)
 	return(( ( p.x >= r.pt1.x ) && ( p.x <= r.pt2.x ) )&&( ( p.y >= r.pt1.y ) && (p.y <= r.pt2.y) ) ) ; //Assumed rectangle in canonical form and pt1 coordinates are less than pt2 (here canonical form means pt1 is closer to origin than pt2) 
 }
 
+// canonrect : Returns the rectangle in Canonical Form( i.e pt1 < pt2 ) 
+struct rectangle canonrect( struct rectangle r )
+{
+	struct rectangle temp ;
+	temp.pt1.x = min( r.pt1.x , r.pt2.x ) ;
+	temp.pt2.x = max( r.pt1.x , r.pt2.x ) ;
+	temp.pt1.y = min( r.pt1.y , r.pt2.y ) ;
+	temp.pt2.y = max( r.pt1.y , r.pt2.y ) ;
+	return temp ;
+}
+
 int main( int argc , char *argv[] )
 {
 	struct point pt ;
+	struct rectangle r ;
 	return 0 ;
 }
