@@ -39,7 +39,7 @@ struct key {
     {"union", 0},
     {"unsigned", 0},
     {"void", 0},
-    {"volatite", 0},
+    {"volatile", 0},
     {"while", 0}
 };
 
