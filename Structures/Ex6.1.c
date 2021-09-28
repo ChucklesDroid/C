@@ -3,8 +3,8 @@
 #include <string.h>
 
 #define MAXWORD 100
-#define NKEYS (sizeof keytab / sizeof keytab[0])
-
+#define NKEYS (sizeof(keytab) / sizeof(keytab[0]) )
+enum { NUM = 1 } ;
 struct key {
     char *word;
     int count;
@@ -39,27 +39,27 @@ struct key {
     {"union", 0},
     {"unsigned", 0},
     {"void", 0},
-    {"volatite", 0},
+    {"volatile", 0},
     {"while", 0}
 };
 
 int getword(char *, int);
 int binsearch(char *, struct key *, int);
-
+void comments(void) ; // For managing comments
 /* count C keywords */
 int main() {
     int n;
     char word[MAXWORD] , ch ;
 
     while ((ch = getword(word, MAXWORD)) !='\n' && ch != EOF ) {
-    if (isalpha(word[0]))
-            if ((n = binsearch(word, keytab, NKEYS)) >= 0)
-                keytab[n].count++;
+    	if (isalpha(word[0]))
+        	    if ((n = binsearch(word, keytab, NKEYS)) >= 0)
+                	keytab[n].count++;
+    }
+
     for (n = 0; n < NKEYS; n++)
         if (keytab[n].count > 0)
-            printf("%4d %s\n",
-                   keytab[n].count, keytab[n].word);
-    }
+            printf("%4d %s\n",keytab[n].count, keytab[n].word);
 
     return 0;
 }
@@ -91,7 +91,8 @@ void ungetch(int);
 char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
 
-int getch(void) { /* get a (possibly pushed back) character */
+int getch(void) 
+{ /* get a (possibly pushed back) character */
     return (bufp > 0) ? buf[--bufp] : getchar();
 }
 
@@ -102,4 +103,46 @@ void ungetch(int c) { /* push character back on input */
         buf[bufp++] = c;
 }
 
-int getword (
+int getword ( char *w , int limit )
+{
+	char c ;
+	while( (c = *w = getch()) == ' ' && c == '\t' ) ;
+	
+	if ( isalpha(c) || c == '_' || c == '#' ) {
+		while( isalnum(c = getch()) || c == '_' )
+			*(++w) = c ;	
+		ungetch(c) ;
+        *(++w) = '\0' ;
+		return NUM ;
+	} else if( c == '\'' || c =='"' ) {
+		while(( c = getch()) != '\'' && c != '"' && c != EOF )		
+			*(++w) = c ;
+		//ungetch(c) ;
+		if( c == '\'' || c == '"')
+            *(++w) = c ;
+		*(++w) = '\0' ;
+		return '"' ;
+	} else if( c == '/'){ 
+		//while( (c=getch()) != ' ') ;
+		comments() ;
+		*w = '\0' ;
+		return '/';
+	} else { 
+		*w = '\0' ;
+		return c ;
+    	}
+}
+
+void comments( void )
+{
+	int c ;
+	if( (c=getch()) == '*' || c == '/' ){
+		while( (c=getch()) != '*' || c != ' ' || c != EOF ) ;
+	}
+	//else
+	//	ungetch(c) ;
+	if( c == '*')
+		getch() ;
+	else
+		ungetch(c) ;
+}
