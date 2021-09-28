@@ -135,14 +135,21 @@ int getword ( char *w , int limit )
 
 void comments( void )
 {
-	int c ;
+	char c ;
 	if( (c=getch()) == '*' || c == '/' ){
-		while( (c=getch()) != '*' || c != ' ' || c != EOF ) ;
+		while( (c=getch()) != '*' && c != '\n' && c != EOF ) 
+            if ( c == '*')
+                if( c == '/')
+                    break ;
+                else 
+                    ungetch(c) ;
 	}
+    if ( c == '\n' )
+        ungetch(c) ;
 	//else
 	//	ungetch(c) ;
-	if( c == '*')
-		getch() ;
-	else
-		ungetch(c) ;
+	//if( c == '*')
+	//	getch() ;
+	//else
+	//	ungetch(c) ;
 }
