@@ -51,7 +51,7 @@ int main() {
     int n;
     char word[MAXWORD] , ch ;
 
-    while ((ch = getword(word, MAXWORD)) !='\n' && ch != EOF ) {
+    while ((ch = getword(word, MAXWORD)) != EOF ) {
     	if (isalpha(word[0]))
         	    if ((n = binsearch(word, keytab, NKEYS)) >= 0)
                 	keytab[n].count++;
