@@ -57,3 +57,11 @@ talloc(void)
 {
 	return (struct tnode)malloc(sizeof(struct tnode)) ;
 }
+
+void printtree( struct tnode *p)
+{
+	printtree( p->left ) ;
+	if( p != NULL )
+		printf("%4d\n" , p->word ) ;
+	printtree( p->right ) ;
+}
