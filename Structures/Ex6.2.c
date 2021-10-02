@@ -1,8 +1,15 @@
 #include<stdio.h>
 #include<ctype.h>
+#include<stdlib.h>
+#include<string.h>
 #define WORDMAX 100
+#define BUFSIZE 100
 #define YES 1 
 #define NO 0
+
+char buf[BUFSIZE]; 
+int bufp = 0; 
+enum { NUM = 1 } ;
 struct tnode{
 	char *word ;
 	int conf ;
@@ -10,67 +17,76 @@ struct tnode{
 	struct tnode *right ;
 } ;
 struct tnode *
-talloc() ;
-char *strdup(char *w) ;
+talloc(void) ;
+struct tnode *
+addtree( struct tnode *p , char *w , int num , int *found ) ;
+char *strrdup(char *w) ;
 void printtree( struct tnode *p ) ;
-int compare( struct tnode *p , char *t , int num ) ;
-int addtree( struct tnode *p , char *w , int num ) ;
-int getword( struct tnode *p , char *w ) ;
+int compare( struct tnode *p , char *t , int num , int *found ) ;
+int getword( char *w ) ;
 void comments( void ) ;
 int getch( void ) ;
 void ungetch( int c ) ;
-int main(void)
+int main( int argc , char *argv[])
 {
 	char word[WORDMAX] ;
-	int ch , num :
+	int ch , num ;
+	int found = NO ;
 	struct tnode *root ;
-	num =(--argc > 0 && **(++argv) == "-") ? atoi(++(*argv)) : 6 ;
+	num = (--argc > 0 && **(++argv) == '-') ? atoi(++(*argv)) : 6 ;
 	root = NULL ;
-	while( (ch=getword(root,word)) != EOF && ch != "\n")
-		if( isaplha(word[0]) )
-			root = addtree( root , word , num) ;
+	while( (ch=getword(word)) != EOF && ch != '\n')
+		if( isalpha(word[0]) )
+			root = addtree( root , word , num , &found ) ;
 	printtree(root) ;
 }
 
-int addtree( struct tnode *root , char *w , int num ) 
+struct tnode *
+addtree( struct tnode *p , char *w , int num , int *found ) 
 {
 	int cond ;
-	if( root == NULL ){
-		root = talloc() ;	
-		root->word = strdup(w) ;
-		root->conf = NO ;
-		root->left = root->right = NULL ;
-	} else if( (cond = compare( root , w , num )) == NULL ) {
-		root->conf = YES ;
-	} else if( cond > 0 )
-		root->left = addtree( root->left , w , num ) ; 
+	if( p == NULL ){
+		p = talloc() ;	
+		p->word = strrdup(w) ;
+		p->conf = *found ;
+		p->left = p->right = NULL ;
+		//return p ;
+	}// else if( (cond = compare( p , w , num ,found)) == 0 ) {
+	 //	p->conf = YES ;
+	//}
+	else if( (cond = compare( p , w , num ,found)) > 0 )
+		p->left = addtree( p->left , w , num ,found) ; 
 	else
-		root->right = addtree( root->rigt , w , num ) ;
+		p->right = addtree( p->right , w , num ,found) ;
+	return p ;
 }
 
-void printtree( struct tnode *root )
+void printtree( struct tnode *p )
 {
-	printtree( root->left) ;
-	if( root != NULL && root->conf == YES)
-		printf("%s\n" , root->word ) ;
-	printtree( root->right ) ;
+	printtree( p->left) ;
+	if( p != NULL && p->conf == YES)
+		printf("%s\n" , p->word ) ;
+	printtree( p->right ) ;
 }
 
-int compare( struct tnode *p , char *w , int num )
+int compare( struct tnode *p , char *t , int num , int *found )
 {
 	char *s = p->word ;
-	for(int i = 1 ; *s == *t ; s++ , t++, i++ ) 
-		if( i == num ){
-			p->conf = YES ;
-			return 0 ;
+	int i ;
+	for(i = 1 ; *s == *t ; s++ , t++, i++ ){
+			if( *s == '\0')
+				return 0 ;
 		}	
+		if( i >= num ){
+			*found = YES ;
+			p->conf = YES ;
+		}
 	return (*s - *t) ;
 }
 
 
-int getword ( struct tnode *p , int limit )
+int getword ( char *w )
 {
-	char *w = p->word ;
 	char c ;
 	while( (c = *w = getch()) == ' ' && c == '\t' ) ;
 	
@@ -132,7 +148,7 @@ void ungetch(int c) { /* push character back on input */
         buf[bufp++] = c;
 }
 
-char *strdup( char *w )
+char *strrdup( char *w )
 {
 	char *p ;
 	p = (char *)malloc( strlen(w) + 1) ;
@@ -144,5 +160,5 @@ char *strdup( char *w )
 struct tnode *
 talloc(void)
 {
-	return (struct tnode)malloc(sizeof(struct tnode)) ;
+	return (struct tnode *)malloc(sizeof(struct tnode)) ;
 }
