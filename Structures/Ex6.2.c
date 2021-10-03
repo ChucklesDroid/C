@@ -36,8 +36,10 @@ int main( int argc , char *argv[])
 	num = (--argc > 0 && **(++argv) == '-') ? atoi(++(*argv)) : 6 ;
 	root = NULL ;
 	while( (ch=getword(word)) != EOF && ch != '\n')
-		if( isalpha(word[0]) )
+		if( isalpha(word[0]) ){
+			found = 0; 
 			root = addtree( root , word , num , &found ) ;
+		}
 	printtree(root) ;
 }
 
@@ -54,26 +56,35 @@ addtree( struct tnode *p , char *w , int num , int *found )
 	}// else if( (cond = compare( p , w , num ,found)) == 0 ) {
 	 //	p->conf = YES ;
 	//}
-	else if( (cond = compare( p , w , num ,found)) > 0 )
-		p->left = addtree( p->left , w , num ,found) ; 
-	else
-		p->right = addtree( p->right , w , num ,found) ;
+	else if( (cond = compare( p , w , num ,found)) > 0 ){
+		if(found)
+			p->conf = YES ;
+		p->right = addtree( p->right , w , num ,found) ; 
+	} else if( cond < 0 ){
+		if( found )
+			p->conf = YES ;
+		p->left = addtree( p->left , w , num ,found) ;
+	} else 
+		p->conf = YES ;
 	return p ;
 }
 
 void printtree( struct tnode *p )
 {
+	if( p != NULL) {
 	printtree( p->left) ;
-	if( p != NULL && p->conf == YES)
+	//if( p != NULL && p->conf == YES)
+	if( p->conf )
 		printf("%s\n" , p->word ) ;
 	printtree( p->right ) ;
+	}
 }
 
 int compare( struct tnode *p , char *t , int num , int *found )
 {
 	char *s = p->word ;
 	int i ;
-	for(i = 1 ; *s == *t ; s++ , t++, i++ ){
+	for(i = 0 ; *s == *t ; s++ , t++, i++ ){
 			if( *s == '\0')
 				return 0 ;
 		}	
