@@ -72,11 +72,11 @@ addtree( struct tnode *p , char *w , int num , int *found )
 void printtree( struct tnode *p )
 {
 	if( p != NULL) {
-	printtree( p->left) ;
+	printtree( p->right) ;
 	//if( p != NULL && p->conf == YES)
 	if( p->conf )
 		printf("%s\n" , p->word ) ;
-	printtree( p->right ) ;
+	printtree( p->left ) ;
 	}
 }
 
