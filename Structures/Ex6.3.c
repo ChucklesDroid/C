@@ -35,12 +35,11 @@ int main( int argc , char *argv[])
    struct tnode *root ;
    int linenum = 1;
    char word[WORDMAX] ;
-   char ch;
    root = NULL ;
-   while( ch=(getword(word)) != EOF ){
+   while( getword(word) != EOF ){
    	if( isalpha(word[0]) && noiseword(word) == -1 )
 		root = addtree( root , linenum , word ) ;
-	if( ch == '\n' )
+	if( word[0] == '\n' )
 		linenum++ ;
    }
    printtree(root) ;
@@ -155,10 +154,10 @@ void ungetch(int c) {
 		p->list->lnum = linenum ;
 		p->list->ptr = NULL ;
 		p->left = NULL ;
-		p->left = NULL ;
+		p->right = NULL ;
 	} else if((cond = strcmp( p->word ,w )) == 0 ){
 		addline(p , linenum) ;	
-	} else if( cond < 0 )
+	} else if( cond > 0 )
 		p->left = addtree( p->left , linenum , w) ;
 	else
 		p->right = addtree( p->right , linenum , w ) ;
