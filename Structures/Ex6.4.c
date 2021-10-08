@@ -20,7 +20,7 @@ char *Strdup( char *W ) ;
 struct tnode *
 addtree( struct tnode * , char * ) ;
 void printtree(struct tnode **) ;
-void shellsort(struct tnode *, struct tnode **) ;
+void shellsort(struct tnode **) ;
 void ungetch(int ) ;
 void comments(void) ;
 int getword(char * ) ;
@@ -36,7 +36,7 @@ int main( int argc , char *argv[] )
 			root = addtree( root , word ) ;
 	}
 	treestore(root,ptrlist) ;
-	shellsort(root, ptrlist);
+	shellsort(ptrlist);
 	printtree(ptrlist) ;
 	return 0 ;
 }
@@ -57,15 +57,13 @@ addtree( struct tnode *p , char *w )
 		p->right = addtree( p->right , w ) ;
 	else 
 		p->left = addtree( p->left , w ) ;
+	return p ;
 }
 
 void printtree( struct tnode **p )
 {
-	while( ntnde >= 0 ){
-		printf("%d\t%s", (*p)->count , (*p)->word ) ;
-		ntnde-- ;
-		p++ ;
-	}
+	for(int i = 0 ; i <  ntnde && p != NULL ; i++ )
+		printf("%d\t%s\n", p[i]->count , p[i]->word ) ;
 }
 
 int getword ( char *w )
@@ -135,13 +133,16 @@ char *Strdup( char *w )
  	return p ;
 }
 
-void shellsort( struct tnode *p, struct tnode *Arr[])
+void shellsort(struct tnode *Arr[])
 {
 	int gap , i , j ;
-	for( gap = ntnde/2 ; gap >= 0 ; gap /= 2 )
+	struct tnode *temp ;
+	for( gap = ntnde/2 ; gap > 0 ; gap /= 2 )
 		for( i = gap ; i < ntnde ; i++ )
-			for ( j = i - gap ; j>0 && Arr[j] > Arr[j+gap] ; j -= gap ){
-				struct tnode *temp = Arr[j] ;
+			for ( j = i - gap ; j>=0 ; j -= gap ){
+				if(Arr[j]->count > Arr[j+gap]->count)
+					break ;
+				temp = Arr[j] ;
 				Arr[j] = Arr[j+gap] ;
 				Arr[j+gap] = temp ;
 			}	
