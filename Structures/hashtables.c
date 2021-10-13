@@ -1,5 +1,6 @@
 #include<stdio.h>
 #define HASHSIZE 10
+
 struct linkedlist {
 	char *name ;
 	char *defn ;
@@ -29,7 +30,7 @@ install( char *name , char *defn )
 {
 	unsigned hashval ;
 	struct linkedlist *np ;
-	if((np = hashtab[hash(name)]) == NULL){
+	if((np = lookup(name)) == NULL){
 		np = ( struct linkedlist *)malloc( sizeof(struct linkedlist)) ;
 		if(np == NULL || (np->name=Strdup(name)) == NULL )
 			return NULL ;
@@ -43,7 +44,11 @@ install( char *name , char *defn )
 	return np ;
 }
 
-int main( int argc , char *argv[] )
+char *Strdup( char *s )
 {
-	return 0 ;
+	char *str = NULL ;	
+	str = (char *)malloc(strlen(s)+1) ;
+	if( str != NULL )
+		strcpy( str , s ) ;
+	return str ; 
 }
