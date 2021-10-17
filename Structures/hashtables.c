@@ -1,4 +1,3 @@
-#include<stdio.h>
 #define HASHSIZE 10
 
 struct linkedlist {
