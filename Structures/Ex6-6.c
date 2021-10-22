@@ -5,7 +5,7 @@
 #define WORDMAX 1000
 #define TABLESIZE 10
 #define BUFSIZE 100
-// directive , literal , strings , comments , backslash
+
 struct hashtables{
 	char *key ;
 	char *value ;
@@ -26,7 +26,7 @@ struct hashtables *
 lookup( struct hashtables ** , char *) ;
 int getword( char *) ;
 void printtable( struct hashtables **) ;
-void install( struct hashtables **, char *) ;
+void install( struct hashtables **) ;
 unsigned hash( char * ) ;
 int main( int argc , char *argv[] )
 {
@@ -38,13 +38,13 @@ int main( int argc , char *argv[] )
 		else
 			line_start = 0; 
 		if( directive == 1 && keyval == 1 && val == 1)
-			install(tab,word) ;
+			install(tab) ;
 	}
 	printtable(tab) ;
 	return 0 ;
 }
 
-// passes macro and its replacment from the input text
+// passes macro and its replacment text from the input text
 int getword( char *word) 
 {
 	char *w = word , *k = key , *v = value ;
@@ -82,25 +82,28 @@ int getword( char *word)
 				while( isalnum(ch = *++v = getch()) ) ;
 				*v = '\0' ;
 				ungetch(ch) ;		
+				val = 1;
 			}
-			return '#' ;
 		}
-		else
-			return *w ;
-	}
-	else if( isalnum(ch) ){
-		while( isalpha(ch = *w++ = getch()) ) ;			
-		return word[0] ;	
-	}
-	else
+			return ch ;
+		// else
+		// 	return *w ;
+	} else if( isalnum(ch) ){ //entire word is parsed is returned
+			while( isalpha(ch = *w++ = getch()) ) ;			
+			*(--w) = '\0' ;
+			ungetch(ch) ;
+			return word[0] ;	
+	} else	// anything other than alphanumeric or #define is encountered is also returned back
 		return ch ;
 }
 
+// Parses and returns value from the buffer
 int getch(void) 
 { 
     return (bufp > 0) ? buf[--bufp] : getchar();
 }
 
+// Push the extra read value back to the buffer( here a seperate array is created for that purpose)
 void ungetch(int c) 
 { 
     if (bufp >= BUFSIZE)
@@ -109,26 +112,27 @@ void ungetch(int c)
         buf[bufp++] = c;
 }
 
-void install( struct hashtables *p[TABLESIZE] , char *w)
-{
- 	int i , j ;
-	//char *k = key , *v = value ;
-	unsigned hashval ;
-	hashval = hash(w) ;
-//	struct hashtables *t
-	if( p[hashval] == NULL ){
-		struct hashtables *temp ;
-		temp =(struct hashtables *)malloc( sizeof( struct hashtables ) ) ;
-		temp->key = ( char *)malloc(sizeof(char *)) ;
-		strcpy(temp->key, ::key) ;
-		temp->value = (char *)malloc(sizeof(char *)) ;
-		strcpy(temp->value,::value) ;
-		temp->next = p[hashval] ;
-		//p[hashval]->next = p[hashval] ;
-	} else 
-		install( p[hashval]->next , w) ;
-}
+// void install( struct hashtables *p[TABLESIZE] , char *w)
+// {
+//  	int i , j ;
+// 	//char *k = key , *v = value ;
+// 	unsigned hashval ;
+// 	hashval = hash(w) ;
+// //	struct hashtables *t
+// 	if( p[hashval] == NULL ){
+// 		struct hashtables *temp ;
+// 		temp =(struct hashtables *)malloc( sizeof( struct hashtables ) ) ;
+// 		temp->key = ( char *)malloc(sizeof(char *)) ;
+// 		strcpy(temp->key, ::key) ;
+// 		temp->value = (char *)malloc(sizeof(char *)) ;
+// 		strcpy(temp->value,::value) ;
+// 		temp->next = p[hashval] ;
+// 		//p[hashval]->next = p[hashval] ;
+// 	} else 
+// 		install( p[hashval]->next , w) ;
+// }
 
+// Prints the macros along with its replacement text which is stored in the table
 void printtable ( struct hashtables *tab[TABLESIZE] )
 {
 	int i ;
@@ -140,14 +144,16 @@ void printtable ( struct hashtables *tab[TABLESIZE] )
 	}
 }
 
+// Function which calculates hash value depending on the key parsed from input
 unsigned hash( char *s )
 {
-	unsigned hash = 0; 
+	unsigned hashval = 0; 
 	for( ; *s != '\0' ; s++ )
-		hash = *s + 31 * hash ;
-	return hash ;
+		hashval = *s + 31 * hashval ;
+	return hashval % TABLESIZE ;
 }
 
+// Returns the address of the node at which key is found else returns NULL 
 struct hashtables *
 lookup( struct hashtables *tab[TABLESIZE] , char *w )
 {
@@ -156,4 +162,23 @@ lookup( struct hashtables *tab[TABLESIZE] , char *w )
 		if( strcmp(np->key,w) == 0 )
 			return np ;
 	return NULL ;
+}
+
+// Installs the marco along with its replacement text in the hashtable
+void install( struct hashtables *tab[TABLESIZE])
+{
+	struct hashtables *np = NULL ;
+	np = lookup( tab,key ) ;
+	unsigned hashval = hash(key) ;
+
+	if( np == NULL ){
+		np = (struct hashtables *)malloc( sizeof(struct hashtables)) ;
+		np->key = (char *)malloc( strlen(key) + 1) ;
+		np->value = (char *)malloc( strlen(value) + 1) ;
+		strcpy( np->key , key ) ;
+		strcpy( np->value , value) ;
+		np->next = tab[hashval] ;
+		tab[hashval] = np ;
+	} else
+		strcpy( np->value , value ) ;
 }
