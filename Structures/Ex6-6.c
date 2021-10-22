@@ -67,8 +67,9 @@ int getword( char *word)
 					line_start = 1;
 					return '\n' ;
 				}
-			ungetch(ch) ;
-			while(isalpha( ch = *k++ = getch() ) || ch == '_') ; 
+			//ungetch(ch) ;
+			*k = ch ;
+			while(isalpha( ch = *++k = getch() ) || ch == '_') ; 
 			*k = '\0' ;
 			ungetch(ch) ;
 			if( isalpha(key[0]) || key[0] == '_'){
@@ -76,8 +77,9 @@ int getword( char *word)
 				while( isspace( ch =getch() ) )
 					if( ch == '\n')
 						return '\n' ;
-				ungetch(ch) ;
-				while( isalnum(ch = *v++ = getch()) ) ;
+				//ungetch(ch) ;
+				*v = ch ;
+				while( isalnum(ch = *++v = getch()) ) ;
 				*v = '\0' ;
 				ungetch(ch) ;		
 			}
@@ -110,21 +112,21 @@ void ungetch(int c)
 void install( struct hashtables *p[TABLESIZE] , char *w)
 {
  	int i , j ;
-	char *k = key , *v = value ;
+	//char *k = key , *v = value ;
 	unsigned hashval ;
 	hashval = hash(w) ;
 //	struct hashtables *t
 	if( p[hashval] == NULL ){
 		struct hashtables *temp ;
-		p[hashval] =(struct hashtables *)malloc( sizeof( struct hashtables ) ) ;
-		p[hashval]->key = ( char *)malloc(sizeof(char *)) ;
-		strcpy(p[hashval]->key,k) ;
-		p[hashval]->value = (char *)malloc(sizeof(char *)) ;
-		strcpy(p[hashval]->value,v) ;
-		temp = p[hashval]->next ;
-		p[hashval]->next = p[hashval] ;
-	}
-		
+		temp =(struct hashtables *)malloc( sizeof( struct hashtables ) ) ;
+		temp->key = ( char *)malloc(sizeof(char *)) ;
+		strcpy(temp->key, ::key) ;
+		temp->value = (char *)malloc(sizeof(char *)) ;
+		strcpy(temp->value,::value) ;
+		temp->next = p[hashval] ;
+		//p[hashval]->next = p[hashval] ;
+	} else 
+		install( p[hashval]->next , w) ;
 }
 
 void printtable ( struct hashtables *tab[TABLESIZE] )
