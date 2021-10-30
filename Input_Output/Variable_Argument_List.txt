@@ -1,9 +1,9 @@
-https://www.youtube.com/watch?v=83DCAtLl2Yg
+https://www.youtube.com/watch?v=M6OxN2Hxros
 va_copy , va_list , va_start and va_end are defined in stdarg.h in C
 
 va_list is data type of which variable ap is defined ( ap stands for argument pointer )
 void va_start(va_list ap , last) // last is the name of the last argument before the elipses(...) -> Function initialises ap with first argument of argument list(i.e the known argument)
-type va_arg(va_list ap , type ) // type specifies the return type of va_arg -> Function is used to traverse along the argument list
+type va_arg(va_list ap , type ) // type specifies the return type of va_arg -> Function is used to traverse along the argument list and first return value is the first unknown argument
 void va_end(va_list v) // Function is used at the end of the argument manipulation before returning from the function
 void va_copy(va_list dest, va_list src) // Function is used to copy src to dest
 
@@ -28,4 +28,22 @@ Ex :- Sum function
 
 METHOD 2
 
-Alternative method is to create a 
+Alternative method is to create a additional starting and ending variables to denote start and end of argument list
+Ex:- Sum Function declaration would remain the same
+	Function Calls :- sum( 1, 10 , 20 , 0) ; // 1 will be already passed as known argument list and 0 denotes the last argument of the function sum
+			  sum( 1, 32 , 44 , 0 ) ;
+	Function Definition :-
+	
+	int sum( int arg_cnt , ...)
+	{
+		int sval = 0, num = 0;
+		va_list ap ;
+		ap - va_start( ap , arg_cnt ) ;
+		while(1){
+			num = va_arg( ap , int ) ; 
+			sval += num ;
+			if( num == 0 ) // This indicates that 0 is the end argument of the function signature
+				break ;
+		}
+		return sval ;
+	}
