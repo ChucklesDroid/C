@@ -1,3 +1,6 @@
+/* 				Postfix Calculator of Chapter 4 using scanf 	*/
+
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -45,19 +48,19 @@ int getop( char s[OPMAX] )
 {	
 	int c ,rc ;
 	float f ;
-	while((rc = scanf("%c", &c)) != EOF)
+	while((rc = scanf("%c", &c)) != EOF)	/* Skips blanks and tab spaces */
 		if ( (s[0] = c) != ' ' && c != '\t' )
 			break ;
 	
 	s[1] = '\0' ;
 	if( rc == EOF )
-		return EOF ;
-	if( !isdigit(s[0]) && s[0] != '.' )
+		return EOF ;	/* If EOF encountere */
+	if( !isdigit(s[0]) && s[0] != '.' ) /* Not a digit */
 		return s[0] ;
-	ungetc( c , stdin );
-	scanf("%f",&f) ;
-	sprintf(s,"%f",f) ;
-	return NUM ;
+	ungetc( c , stdin ); 	/* pushes character back to the input stream */
+	scanf("%f",&f) ; 		
+	sprintf(s,"%f",f) ;		/* stores the float value in s */
+	return NUM ;			/* Returns number */
 	
 }
 
