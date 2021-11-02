@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void filecopy( FILE * , FILE *) ;
 
@@ -11,8 +12,12 @@ int main( int argc , char *argv[] )
 	while( --argc ){
 		if( (fp=fopen(*(++argv),"r")) != NULL )
 			filecopy( fp , stdout ) ;
-		else
-			printf("\nFile does not exist") ;
+		else{
+			//printf("\nFile does not exist") ;
+			//return 1 ;
+			fprintf(stderr,"%s : does not exist\n",*argv) ;
+			exit(1) ;
+	}
 	}
 	fclose(fp) ;
 	return 0 ;
