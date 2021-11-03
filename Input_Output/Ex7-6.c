@@ -9,6 +9,7 @@ int main( int argc , char *argv[] )
 	FILE *fp1 , *fp2 ;
 	if( argc != 3 ){
 		fprintf(stderr,"Program compares two files.Pass appropriate number of files") ;
+		exit(1) ;
 	}
 	if((fp1 = fopen(*++argv,"r")) == NULL ){
 		fprintf(stderr,"%s: file cannot be opened",*argv) ;
