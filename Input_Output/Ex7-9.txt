@@ -27,12 +27,32 @@ macro is expanded in every line every time it is invoked.
 		Possible solutions:-
 		
 		a) By making use of GNU extensions -
-			
-		#define isupper(c) 				/
-		({						/
-			typeof(c) = c_ ;			/
-			(c_ >= 'A' && c_ <= 'Z') ? 1:0 ;	/
-		})
+		(i) By making use of typeof		
+			#define isupper(c) 						/
+			({										/
+				typeof(c) c_ = (c) ;				/
+				(c_ >= 'A' && c_ <= 'Z') ? 1:0 ;	/
+			})
+	
+		(ii) By making use of __auto_type
+		In GNU C, but not GNU C++, you may also declare the type of a variable as __auto_type. In that case, the declaration must declare only one variable,
+		whose declarator must just be an identifier, the declaration must be initialized, and the type of the variable is determined by the initializer; 
+		the name of the variable is not in scope until after the initializer. (In C++, you should use C++11 auto for this purpose.)	
+			Advantages over typeof is :-
+			(a) Each argument to macro appears only once in the expansion of the macro. This prevents the size of the macro expansion growing exponentially
+			    when calls to such macros are nested inside arguments of such macros .
+			(b) If argument to the macro has variably modified type , it is evaluated only once when using __auto_type but twice if typeof is used.
+		    #define isupper(c)						/
+			({										/
+				__auto_type c_ = (c) ;				/
+				(c_ >= 'A' && c_ <= 'Z') ? 1:0 ;	/
+			})
+				
+		GNU Extensions used -
+		(a) ({...}) denotes a compound statement which can be evaluated as an expression whose value would be equivalent to the last statement in
+			the code block(called as statement expressions).(https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html#Statement-Exprs)
+		(b) typeof (https://gcc.gnu.org/onlinedocs/gcc/Typeof.html)
+		(c) __auto_type (for C only alternative to C++11 would be using auto)
 
 		But this solution is compiler dependant and works only on gcc
 
