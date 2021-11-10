@@ -1,0 +1,29 @@
+Implementation of isupper to save space and time
+
+1)To save space  :-
+
+int isupper( int c) // Function returns 1 when the passed argument lies in the range of A to Z else returns 0
+{
+	if( c >= 'A' && c <= 'Z' )
+		return 1 ;
+	else
+		return 0 ;
+}
+
+This implementation saves space but consumes more time .
+
+2) To save time
+
+#define isupper(c) ((c >= 'A' && c <= 'Z') ? 1 : 0 )
+
+This implementation saves time as there is no overhead of the function call and it uses more space because the
+macro is expanded in every line every time it is invoked.
+
+	Drawback -
+		
+		When the argument is evaluated twice. For example -
+		char *p = "This is a string" ; // The macro expands to ((*p++ >= 'A' && *p++ <= 'Z')?1:0) which causes problems
+		
+		One possible solution :-
+
+
