@@ -12,7 +12,7 @@ int isupper( int c) // Function returns 1 when the passed argument lies in the r
 
 This implementation saves space but consumes more time .
 
-2) To save time
+2) To save time :-
 
 #define isupper(c) ((c >= 'A' && c <= 'Z') ? 1 : 0 )
 
@@ -24,6 +24,20 @@ macro is expanded in every line every time it is invoked.
 		When the argument is evaluated twice. For example -
 		char *p = "This is a string" ; // The macro expands to ((*p++ >= 'A' && *p++ <= 'Z')?1:0) which causes problems
 		
-		One possible solution :-
+		Possible solutions:-
+		
+		a) By making use of GNU extensions -
+			
+		#define isupper(c) 				/
+		({						/
+			typeof(c) = c_ ;			/
+			(c_ >= 'A' && c_ <= 'Z') ? 1:0 ;	/
+		})
 
+		But this solution is compiler dependant and works only on gcc
 
+		b) Compiler independant solution
+		
+		The only other solution is to store the value in a temporary variable and pass that as argument. Example -
+		char c = *p++ ;
+		isupper(c) ;
