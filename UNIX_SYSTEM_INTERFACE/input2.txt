@@ -1,3 +1,0 @@
-This is embarassing 
-is'nt it ?
-End of file '\0'
