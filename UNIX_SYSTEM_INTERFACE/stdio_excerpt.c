@@ -64,7 +64,7 @@ FILE *fopen( char *pathname , char *mode )
 	for( fp = _iob; fp < iob + OPEN_MAX ; fp++ )
 		if((fp->flag & (_READ | _WRITE)) == 0 )
 			break ;		// Free slot found in the table 
-	if( fp > 0 ) 			// No free slot found in the table 
+	if( fp > _iob+OPEN_MAX )	// No free slot found in the table 
 		return NULL ;		
 
 
