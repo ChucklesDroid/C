@@ -55,7 +55,9 @@ void dirwalk( char *name , void (*fn)( char * ) )
 /*Skips the rest of code when it encounters the parent directory or itself .*/
         if( strcmp(fp->d_name,".") == 0 || strcmp(fp->d_name,"..") == 0 )
             continue ;              
-        if( fp->d_type != DT_DIR ){
+/* Checks if file is a directory or not and proceeds accordingly */
+        if( fp->d_type != DT_DIR ){ 
+/* Saves the entire pathname since the file is now found inside a directory */
             sprintf(pathname,"%s/%s",name,fp->d_name) ;
             (*fn)(pathname) ;
         }
