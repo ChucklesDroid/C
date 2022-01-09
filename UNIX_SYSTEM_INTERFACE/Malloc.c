@@ -130,7 +130,30 @@ void kar_free( void *p )
         insertp->s.size += currp->s.ptr->s.size ;
         insertp->s.ptr = currp->s.ptr->s.ptr ;
     } 
-        
+
+/*
+    A better implementation would be to adjust at both ends seperately.
+    First right end is looked at i.e memory block towards the right of the block
+    being inserted
+
+    if( insertp + insertp->s.size == currp->s.ptr ){
+        insertp->s.size += currp->s.ptr->s.size ;
+        insertp->s.ptr = currp->s.ptr->s.ptr ;
+    } else{
+        insertp->s.ptr = currp->s.ptr ;
+    }
+
+    Now left end is looked at i.e the memory block towards the left of the block
+    being inserted 
+
+    if( currp + currp->s.size == insertp ){
+        currp->s.size += insertp->s.size ;
+        currp->s.ptr = insertp->s.ptr ;
+    } else {
+        currp->s.ptr = insertp.s-ptr ;
+    }
+*/
+
     /* Freep is reinitialised to point to previous memory block */
     freep = currp ;
 }
