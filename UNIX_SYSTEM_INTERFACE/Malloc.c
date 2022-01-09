@@ -37,7 +37,8 @@ Header *kar_malloc( unsigned nu )
     prevp = freep ;         /* Initialising prevp to point at start of free list */
 
     /* case :- freelist exists and is traversed to find the appropriate match */
-    for( currp = freep ; ; prevp = currp , currp = currp->s.ptr ){
+        /* currp points at the memory block after prevp to access the list */
+    for( currp = prevp->s.ptr ; ; prevp = currp , currp = currp->s.ptr ){
 
 /* Big enough memory block is found */
         if( currp->s.size >= nunits ){
