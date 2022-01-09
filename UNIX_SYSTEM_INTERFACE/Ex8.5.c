@@ -32,7 +32,7 @@ void fsize( char *name )
     }
     if( stbuf.st_mode & S_IFMT == S_IFDIR )
         dirwalk(name,fsize) ;
-    printf("%s\t%ld\n",name,stbuf.st_size) ;
+    printf("%s\tSize: %ld\n",name,stbuf.st_size) ;
     printf("Number of HardLinks:%d\n",stbuf.st_nlink) ;
     printf("User Id : %d\n",stbuf.st_uid) ;
     printf("Group Id: %d\n",stbuf.st_gid) ;
