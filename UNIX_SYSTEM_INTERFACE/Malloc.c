@@ -1,3 +1,6 @@
+/* Refer book to understand storage allocator or following website ;- 
+https://stackoverflow.com/questions/13159564/explain-this-implementation-of-malloc-from-the-kr-book */
+
 #include <stdio.h>
 #include <unistd.h>
 #define NALLOC 1024
