@@ -4,6 +4,7 @@ Improve these routines so they make more pains with error checking. */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #define NALLOC 1024                             /* At time NALLOC bytes are allocated since system calls are slow */
 #define MAXBYTES 10240                          /* Max bytes that malloc can allocate */
 typedef unsigned Align ;                        /* Most restrictive type */
@@ -30,7 +31,7 @@ Header *Kandr_malloc( unsigned nu )
 
 /* Checking size request for plausibility */
     if ( nu > MAXBYTES ){
-        fprintf(stderr,"Kandr_malloc: unable to alloc %zu units\n",nu) ;
+        fprintf(stderr,"Kandr_malloc: unable to alloc %u units\n",nu) ;
         return NULL;
     }
 
@@ -77,14 +78,16 @@ Header *memcore( unsigned nu )
         nu = NALLOC ;
     
 /* Memory Block initialised and inserted in the free list */
-    Header *insertp = sbrk( nu * sizeof(Header) ) ; // Memory Block to be inserted in freelist
+    char *programbrk;
+    programbrk = sbrk( nu * sizeof(Header) ) ; 
+    Header *insertp = (Header *)programbrk ;    // Memory Block to be inserted in freelist
     if( insertp == (void *)-1 )
         return NULL ;
     insertp->s.size = nu ;
 
 
 /* initialising maxalloc to makesure malloced block is freed */
-    maxalloc = ( maxalloc ? nu ) ? maxalloc : nu ;
+    maxalloc = ( maxalloc > nu ) ? maxalloc : nu ;
 
 
 /* Inserting the memory block in the freelist and resetting freep pointer*/
@@ -98,14 +101,14 @@ void Kandr_free( Header *insertp )
 {
     Header *currp ;
 /* Checking if valid memory block is being freed */
-    for( insertp->s.size == 0 || insertp->s.size > maxalloc ){
+    if( insertp->s.size == 0 || insertp->s.size > maxalloc ){
         fprintf(stderr,"Kandr :Invalid memory block passed") ;
         return ;
     }
 
 
 /* Traversing the freelist to find appropriate position to insert memory block */
-    for( currp = freep ; ((insertp > currp) && ( currp->s.next > insertp ) ; currp = currp->s.next){
+    for( currp = freep ; ((insertp > currp) && ( currp->s.next > insertp )) ; currp = currp->s.next){
     /* case : if block to be inserted is either rightmost of leftmost in the freelist */
         if( (currp > currp->s.next) && ( (insertp > currp) || (insertp > currp->s.next) ))        
             break ;
