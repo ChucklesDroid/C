@@ -25,7 +25,7 @@ void *bfree( void *p , unsigned n) ;			/* Free any arbitrary block into the free
 int main( int argc , char *argv[] )
 {
 	char Arr[10] = "Aakarsh";
-	printf("Size of header is %d \n", sizeof(Header *));
+	printf("Size of header is %lu \n", sizeof(Header *));
 	bfree( (void *)Arr , 10 ) ;
 	printf("Address of Arr is %p\n" , Arr ) ;
 	printf("Address of base is %p\n" , &base ) ;
@@ -65,6 +65,7 @@ void *bfree( void *p , unsigned n )
 	/* Puts the memory block back into the free list and reinitialises the freep pointer */
 		Kandr_free(insertp) ;
 	}
+return NULL;
 }
 
 
